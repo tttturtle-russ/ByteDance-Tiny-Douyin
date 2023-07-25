@@ -1,8 +1,6 @@
 syntax = "proto2";
 package douyin.core;
 
-option go_package = "douyin_core/douyin_core";
-
 message douyin_feed_request {
   optional int64 latest_time = 1; // 可选参数，限制返回视频的最新投稿时间戳，精确到秒，不填表示当前时间
   optional string token = 2; // 可选参数，登录用户设置
@@ -38,8 +36,4 @@ message User {
   optional int64 total_favorited = 9; //获赞数量
   optional int64 work_count = 10; //作品数量
   optional int64 favorite_count = 11; //点赞数量
-}
-
-service DouyinFeedService {
-   rpc GetDouyinFeed(douyin_feed_request) returns (douyin_feed_response);
 }

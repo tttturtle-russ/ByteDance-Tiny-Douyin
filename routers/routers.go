@@ -1,6 +1,9 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"ByteDance-Tiny-Douyin/controller"
+	"github.com/gin-gonic/gin"
+)
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
@@ -8,9 +11,9 @@ func InitRouter() *gin.Engine {
 	dy.GET("/feed") // 视频流接口
 	user := dy.Group("/user")
 	{
-		user.GET("/")          // 用户信息
-		user.POST("/register") // 注册
-		user.POST("/login")    // 登录
+		user.GET("/")                               // 用户信息
+		user.POST("/register", controller.Register) // 注册
+		user.POST("/login")                         // 登录
 	}
 	favorite := dy.Group("/favorite")
 	{
