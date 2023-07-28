@@ -10,6 +10,7 @@ import (
 var redisClient *redis.Client
 var ctx context.Context
 
+// initRedis 从config.json 中读取数据库相关信息，然后建立连接
 func initRedis() {
 	ctx = context.Background()
 	username := viper.GetString("database.redis.username")

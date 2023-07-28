@@ -1,14 +1,13 @@
 package service
 
 import (
-	"ByteDance-Tiny-Douyin/dao"
 	"ByteDance-Tiny-Douyin/model"
 )
 
-func RegisterUser(username, password string) error {
+func (svc *Service) RegisterUser(username, password string) (uint, error) {
 	user := model.User{
 		Name:     username,
 		Password: password,
 	}
-	return dao.RegisterUser(user)
+	return svc.d.RegisterUser(user)
 }
