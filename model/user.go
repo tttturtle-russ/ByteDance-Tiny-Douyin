@@ -21,6 +21,7 @@ type User struct {
 	FavoriteCount   int64  // 点赞数
 }
 
+// AfterCreate 是一个hook函数，用于创建完用户后进行的操作
 func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 	if u.Password != "" {
 		var password []byte
@@ -35,6 +36,7 @@ func (u *User) AfterCreate(tx *gorm.DB) (err error) {
 	return
 }
 
+// BeforeCreate 是一个hook函数，用于创建用户前进行的操作
 func (u *User) BeforeCreate(tx *gorm.DB) error {
 	if err := tx.Model(&User{}).Where("name = ?", u.Name).First(&User{}).Error; errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil
