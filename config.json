@@ -1,0 +1,16 @@
+{
+  "database" : {
+    "mysql" : {
+      "username" : "root",
+      "password" : "Russturtle0",
+      "host" : "localhost",
+      "port" : 49155,
+      "dbname" : "tiktok"
+    },
+    "redis" : {
+      "username" : "root",
+      "password" : "",
+      "addr" : "localhost:49156"
+    }
+  }
+}
