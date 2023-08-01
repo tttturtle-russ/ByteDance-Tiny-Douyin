@@ -39,8 +39,8 @@ func InitRouter() *gin.Engine {
 	}
 	message := dy.Group("/message")
 	{
-		message.GET("/chat")    // 用户的聊天消息记录
-		message.POST("/action") // 发送消息
+		message.GET("/chat", controller.Chat)             // 用户的聊天消息记录
+		message.POST("/action", controller.MessageAction) // 发送消息
 	}
 	return router
 }
