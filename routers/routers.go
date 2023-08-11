@@ -7,6 +7,8 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+	router.MaxMultipartMemory = 50 << 20 //限制文件上传大小
+	router.Static("/videos", "./videos")
 	dy := router.Group("/douyin")
 	dy.GET("/feed", controller.FeedHandler) // 视频流接口
 	user := dy.Group("/user")
@@ -22,8 +24,8 @@ func InitRouter() *gin.Engine {
 	}
 	publish := dy.Group("/publish")
 	{
-		publish.POST("/action") // 用户上传视频
-		publish.GET("/list")    // 视频列表
+		publish.POST("/action", controller.UploadHandler) // 用户上传视频
+		publish.GET("/list")                              // 视频列表
 	}
 	comment := dy.Group("/comment")
 	{

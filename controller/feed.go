@@ -19,6 +19,7 @@ func FeedHandler(c *gin.Context) {
 
 	//获取latest_time参数并将其转换为time.Time类型
 	var latestTime time.Time
+	//特判latest_time为空时 默认以当前时间
 	if a := c.Query("latest_time"); a == "" {
 		latestTime = time.Unix(time.Now().Unix(), 0)
 	} else {
@@ -42,7 +43,7 @@ func FeedHandler(c *gin.Context) {
 
 	//遍历videos切片将author字段绑定
 	for index, video := range videos {
-		err = dao.DB.Where("id = ?", video.ID).First(&user).Error
+		err = dao.DB.Where("id = ?", video.AuthorID).First(&user).Error
 		if err != nil {
 			*msg.StatusMsg = "get failed"
 			msg.VideoList = nil
@@ -56,6 +57,7 @@ func FeedHandler(c *gin.Context) {
 
 	//绑定msg
 	msg.VideoList = videos
+	//将最早的视频的created_at转换为时间戳返回
 	*msg.NextTime = videos[len(videos)-1].CreatedAt.Unix()
 	*msg.StatusMsg = "get succeed"
 	msg.StatusCode = http.StatusOK
