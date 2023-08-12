@@ -1,4 +1,4 @@
-package Db
+package db
 
 import (
 	"ByteDance-Tiny-Douyin/models"

@@ -1,6 +1,9 @@
 package routers
 
-import "github.com/gin-gonic/gin"
+import (
+	"ByteDance-Tiny-Douyin/favourite"
+	"github.com/gin-gonic/gin"
+)
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
@@ -14,8 +17,8 @@ func InitRouter() *gin.Engine {
 	}
 	favorite := dy.Group("/favorite")
 	{
-		favorite.POST("/action") // 点赞和取消点赞
-		favorite.GET("/list")    // 点赞列表
+		favorite.POST("/action", favourite.Action) // 点赞和取消点赞
+		favorite.GET("/list")                      // 点赞列表
 	}
 	publish := dy.Group("/publish")
 	{

@@ -1,13 +1,13 @@
 package main
 
 import (
-	"ByteDance-Tiny-Douyin/Db"
+	"ByteDance-Tiny-Douyin/db"
 	"ByteDance-Tiny-Douyin/routers"
 	"log"
 )
 
 func main() {
-	err := Db.InitMysql()
+	err := db.InitMysql()
 	if err == nil {
 		log.Println("database connect succeed")
 	} else {
