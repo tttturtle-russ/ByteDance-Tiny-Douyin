@@ -25,7 +25,7 @@ func InitRouter() *gin.Engine {
 	publish := dy.Group("/publish")
 	{
 		publish.POST("/action", controller.UploadHandler) // 用户上传视频
-		publish.GET("/list")                              // 视频列表
+		publish.GET("/list", controller.ShowListHandler)  // 视频列表
 	}
 	comment := dy.Group("/comment")
 	{
