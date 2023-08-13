@@ -20,8 +20,8 @@ type ActionResponse struct {
 	Msg  string `json:"msg"`
 }
 
-const Like int32 = 1
-const Unlike int32 = 2
+const LikeYou int32 = 1
+const DislikeYou int32 = 2
 const ResponseOk = 0
 
 func Action(c *gin.Context) {
@@ -47,9 +47,11 @@ func Action(c *gin.Context) {
 		}
 		c.JSON(http.StatusBadRequest, res)
 	}
-	userid := claim.Id     //复制用户id
-	videoid := req.VideoId //复制videoid
-	video, userlike, err := dao.Check(userid, videoid)
+	userid := claim.Id
+	videoid := req.VideoId
+
+	//Like表中是否存在点赞记录
+	userlike, err := dao.CheckLike(userid, videoid) //改1
 	if err != nil {
 		res := &ActionResponse{
 			Code: 1,
@@ -59,49 +61,11 @@ func Action(c *gin.Context) {
 	}
 
 	//新点赞情况
-	if userlike == false && req.ActionType == Like {
-		//video的点赞id增加一条
-		if err := dao.Insert(userid, videoid); err != nil {
-			log.Printf("添加新点赞id错误，%v", err)
-			res := &ActionResponse{
-				Code: 1,
-				Msg:  err.Error(),
-			}
-			c.JSON(http.StatusBadRequest, res)
-		}
-
-		//video点赞数增加
-		if err := dao.TotalAdd(videoid); err != nil {
-			log.Printf("增加视频点赞总数错误，%v", err)
-			res := &ActionResponse{
-				Code: 1,
-				Msg:  err.Error(),
-			}
-			c.JSON(http.StatusBadRequest, res)
-		}
-
-		//video的作者总获赞数增加
-		if err := dao.AuthorAdd(videoid); err != nil {
-			log.Printf("增加作者点赞总数错误，%v", err)
-			res := &ActionResponse{
-				Code: 1,
-				Msg:  err.Error(),
-			}
-			c.JSON(http.StatusBadRequest, res)
-		}
-
-		//点赞用户点赞数增加
-		if err := dao.UserAdd(userid); err != nil {
-			log.Printf("用户增加点赞错误， %v", err)
-			res := &ActionResponse{
-				Code: 1,
-				Msg:  err.Error(),
-			}
-			c.JSON(http.StatusBadRequest, res)
-		}
+	if userlike == false && req.ActionType == LikeYou {
+		Like(userid, videoid, c)
 	}
 
-	if userlike == true && req.ActionType == Unlike {
+	if userlike == true && req.ActionType == DislikeYou {
 		//删除取消点赞的id
 		if err := dao.Delete(userid, videoid); err != nil {
 			log.Printf("删除点赞id错误，%v", err)
@@ -144,11 +108,11 @@ func Action(c *gin.Context) {
 	}
 
 	//is_favourite处理（不确定是不是这么处理）
-	if req.ActionType == Like {
-		video.IsFavorite = true
-	} else if req.ActionType == Unlike {
-		video.IsFavorite = false
-	}
+	//if req.ActionType == LikeYou {
+	//	video.IsFavorite = true
+	//} else if req.ActionType == Unlike {
+	//	video.IsFavorite = false
+	//}
 
 	c.JSON(http.StatusOK, ActionResponse{
 		Code: ResponseOk,

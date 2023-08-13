@@ -6,12 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// video的用户列表增加
-func Insert(userid int64, videoid int64) error {
-	err := db.DB.Model(&models.Video{}).Where("video_id = ?", videoid).Update("user_favourites", gorm.Expr("array_append(user_favourites, ?)", userid)).Error
-	return err
-}
-
 // video对应的总获赞数
 func TotalAdd(videoid int64) error {
 	err := db.DB.Model(&models.Video{}).Where("id = ?", videoid).UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", 1)).Error

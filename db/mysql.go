@@ -15,6 +15,6 @@ func InitMysql() error {
 	if err != nil {
 		return err
 	}
-	DB.AutoMigrate(&models.User{}, &models.Video{})
+	DB.AutoMigrate(&models.User{}, &models.Video{}, &models.LikeList{})
 	return nil
 }
