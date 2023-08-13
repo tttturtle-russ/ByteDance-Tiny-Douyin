@@ -40,13 +40,14 @@ func Action(c *gin.Context) {
 	//解析token得userid
 	claim, err := util.ParseToken(req.Token)
 	if err != nil {
-		log.Printf("%v", err.Error())
+		log.Printf("解析错误，%v", err.Error())
 		res := &ActionResponse{
 			Code: 1,
 			Msg:  err.Error(),
 		}
 		c.JSON(http.StatusBadRequest, res)
 	}
+
 	userid := claim.Id
 	videoid := req.VideoId
 
@@ -69,12 +70,7 @@ func Action(c *gin.Context) {
 		DisLike(userid, videoid, c)
 	}
 
-	//is_favourite处理（不确定是不是这么处理）
-	//if req.ActionType == LikeYou {
-	//	video.IsFavorite = true
-	//} else if req.ActionType == Unlike {
-	//	video.IsFavorite = false
-	//}
+	//is_favourite处理（看需求）
 
 	c.JSON(http.StatusOK, ActionResponse{
 		Code: ResponseOk,
