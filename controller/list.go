@@ -2,19 +2,17 @@ package controller
 
 import (
 	"ByteDance-Tiny-Douyin/dao"
-	"ByteDance-Tiny-Douyin/models"
+	"ByteDance-Tiny-Douyin/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func ShowListHandler(c *gin.Context) {
-	var videos []models.Video
-	var user models.User
-	var msg models.MessageReturned
-
-	//
-	msg.StatusMsg = new(string)
-	msg.NextTime = nil
+	var (
+		videos []model.Video
+		user   model.User
+		msg    model.MessageReturned
+	)
 
 	//获取用户id并获取其发布的所有视频
 	userID := c.Query("user_id")
@@ -30,7 +28,7 @@ func ShowListHandler(c *gin.Context) {
 
 	msg.VideoList = videos
 	msg.StatusCode = http.StatusOK
-	*msg.StatusMsg = "succeed"
+	msg.StatusMsg = "succeed"
 
 	c.JSON(http.StatusOK, msg)
 }

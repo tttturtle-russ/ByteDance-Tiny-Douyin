@@ -2,7 +2,7 @@ package controller
 
 import (
 	"ByteDance-Tiny-Douyin/dao"
-	"ByteDance-Tiny-Douyin/models"
+	"ByteDance-Tiny-Douyin/model"
 	"ByteDance-Tiny-Douyin/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -28,7 +28,7 @@ func UploadHandler(c *gin.Context) {
 	videoURL := "/videos/" + fileName
 	title := c.PostForm("title")
 	authorID, _ := strconv.ParseInt(c.PostForm("author_id"), 10, 64)
-	video := models.Video{CommentCount: 0, FavoriteCount: new(int64), PlayURL: videoURL, Title: title, AuthorID: authorID}
+	video := model.Video{CommentCount: 0, FavoriteCount: new(int64), PlayURL: videoURL, Title: title, AuthorID: authorID}
 	if err = dao.DB.Create(&video).Error; err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": err.Error(),
@@ -36,7 +36,7 @@ func UploadHandler(c *gin.Context) {
 	}
 	//返回状态码状态信息
 	c.JSON(http.StatusOK, gin.H{
-		"status_code": 200,
+		"status_code": 0,
 		"status_msg":  "ok",
 	})
 }
