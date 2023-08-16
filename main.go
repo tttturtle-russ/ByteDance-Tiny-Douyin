@@ -1,21 +1,22 @@
 package main
 
 import (
-	"GoWorkspace/db"
-	"GoWorkspace/routes"
-	"github.com/gin-gonic/gin"
+	"ByteDance-Tiny-Douyin/db"
+	"ByteDance-Tiny-Douyin/routers"
+	"github.com/spf13/viper"
+	"log"
 )
 
-func main() {
-	//获取初始化的数据库
-	realdb := db.InitDB()
-	//延迟关闭数据库
-	defer realdb.Close()
-	//创建一个默认的路由引擎
-	r := gin.Default()
-	//启动路由
-	routes.CollectRoutes(r)
+func init() {
+	viper.SetConfigFile("./config.json")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+}
 
-	//在9090端口启动服务
-	panic(r.Run(":9090"))
+func main() {
+	db.InitDB()
+	r := routers.InitRouter()
+	log.Fatal(r.Run())
 }
