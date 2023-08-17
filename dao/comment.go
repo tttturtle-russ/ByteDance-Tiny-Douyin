@@ -26,3 +26,12 @@ func (d *Dao) CommentDelete(request controller.CommentRequest) (string, error) {
 	}
 	return "删除成功", nil
 }
+func (d *Dao) CommentList(videoId string) ([]model.Comment, error) {
+	videoID := videoId
+	var client []model.Comment
+	err := d.Model(&model.Comment{}).Where("VideoID = ?", videoID).Order("Time desc").Find(&client).Error
+	if err != nil {
+		return []model.Comment{}, err
+	}
+	return client, nil
+}
