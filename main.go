@@ -1,19 +1,17 @@
 package main
 
 import (
-	"ByteDance-Tiny-Douyin/dao"
+	"ByteDance-Tiny-Douyin/db"
 	"ByteDance-Tiny-Douyin/routers"
 	"log"
 )
 
-func main() {
+func init() {
 	//连接数据库
-	err := dao.InitMysql()
-	if err != nil {
-		panic(err.Error())
-	}
-	log.Println("database connect succeed")
+	db.InitDB()
+}
 
+func main() {
 	router := routers.InitRouter()
 	log.Fatal(router.Run())
 }
