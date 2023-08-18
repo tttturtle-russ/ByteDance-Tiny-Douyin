@@ -32,10 +32,10 @@ func InitRouter() *gin.Engine {
 	}
 	relation := dy.Group("/relation")
 	{
-		relation.POST("/action")       // 关注和取消关注
-		relation.GET("/follow/list")   // 关注列表
-		relation.GET("/follower/list") // 粉丝列表
-		relation.GET("/friend/list")   // 好友列表
+		relation.POST("/action")                            // 关注和取消关注
+		relation.GET("/follow/list")                        // 关注列表
+		relation.GET("/follower/list")                      // 粉丝列表
+		relation.GET("/friend/list", controller.FriendList) // 好友列表
 	}
 	message := dy.Group("/message")
 	{
