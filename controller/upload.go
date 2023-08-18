@@ -3,11 +3,9 @@ package controller
 import (
 	"ByteDance-Tiny-Douyin/dao"
 	"ByteDance-Tiny-Douyin/db"
-	"ByteDance-Tiny-Douyin/model"
 	"ByteDance-Tiny-Douyin/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 // 实现视频上传接口
@@ -28,11 +26,7 @@ func UploadHandler(c *gin.Context) {
 		return
 	}
 	//将信息存入数据库
-	videoURL := "/videos/" + fileName
-	title := c.PostForm("title")
-	authorID, _ := strconv.ParseInt(c.PostForm("author_id"), 10, 64)
-	video := model.Video{CommentCount: 0, FavoriteCount: new(int64), PlayURL: videoURL, Title: title, AuthorID: authorID}
-	if err = DB.Create(&video).Error; err != nil {
+	if err = dao.UploadVideo(c, fileName, DB); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": err.Error(),
 		})
