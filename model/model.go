@@ -1,4 +1,4 @@
-package models
+package model
 
 type User struct {
 	Id              int64
@@ -28,8 +28,22 @@ type Video struct {
 	//UserFavourites []int64 `json:"user_favourites"` //点赞的用户id
 }
 
-// 定义Like表，记录点赞的id
+// 定义Like表，记录点赞的id和对应的videoid
 type LikeList struct {
 	UserId  int64 `json:"user_id"`
 	VideoId int64 `json:"video_id"`
+}
+
+// 常用到userid和videoid的结构体
+type FavouriteInfo struct {
+	UserId  int64 `json:"user_id"`
+	VideoId int64 `json:"video_id"`
+}
+
+type VideoID struct {
+	VideoId int64 `json:"video_id"`
+}
+
+type UserID struct {
+	UserId int64 `json:"user_id"`
 }

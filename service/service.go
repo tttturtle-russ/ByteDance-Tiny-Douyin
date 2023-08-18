@@ -11,7 +11,7 @@ type Service struct {
 	c *gin.Context
 }
 
-func Newsrevice(c *gin.Context) *Service {
+func Newservice(c *gin.Context) *Service {
 	return &Service{
 		c: c,
 		d: dao.NewDao(db.DB),

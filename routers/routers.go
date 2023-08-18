@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"ByteDance-Tiny-Douyin/favourite"
+	"ByteDance-Tiny-Douyin/controller"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,8 +17,8 @@ func InitRouter() *gin.Engine {
 	}
 	favorite := dy.Group("/favorite")
 	{
-		favorite.POST("/action", favourite.Action) // 点赞和取消点赞
-		favorite.GET("/list")                      // 点赞列表
+		favorite.POST("/action", controller.FavouriteAction) // 点赞和取消点赞
+		favorite.GET("/list")                                // 点赞列表
 	}
 	publish := dy.Group("/publish")
 	{
