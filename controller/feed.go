@@ -13,7 +13,6 @@ func FeedHandler(c *gin.Context) {
 	//建立数据库会话
 	DB := dao.NewDao(db.MySqlDB)
 
-	const videoMaxNum int = 10
 	var (
 		msg    model.MessageReturned
 		videos []model.Video
@@ -29,7 +28,7 @@ func FeedHandler(c *gin.Context) {
 	}
 
 	//按ID降序获得最多10条数据
-	err = DB.Where("created_at < ?", latestTime).Order("created_at desc").Limit(videoMaxNum).Find(&videos).Error
+	err = dao.GetVideoByTime(DB, latestTime, &videos)
 	if err != nil {
 		msg = service.GenerateMassage(latestTime)
 		c.JSON(http.StatusOK, msg)
@@ -38,7 +37,7 @@ func FeedHandler(c *gin.Context) {
 
 	//遍历videos切片将author字段绑定
 	for index, video := range videos {
-		err = DB.Where("id = ?", video.AuthorID).First(&user).Error
+		err = DB.Debug().Where("id = ?", video.AuthorID).First(&user).Error
 		if err != nil {
 			msg = service.GenerateMassage(latestTime)
 			c.JSON(http.StatusOK, msg)
