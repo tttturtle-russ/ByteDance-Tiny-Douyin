@@ -10,6 +10,15 @@ import (
 
 // 实现视频上传接口
 func UploadHandler(c *gin.Context) {
+	//判断是否登录
+	token := c.Query("token")
+	if !(service.IsLogin(token)) {
+		c.JSON(http.StatusOK, gin.H{
+			"status_code": 200,
+			"status_msg":  "please login",
+		})
+	}
+
 	//建立数据库会话
 	DB := dao.NewDao(db.MySqlDB)
 

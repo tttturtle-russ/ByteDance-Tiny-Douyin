@@ -43,3 +43,10 @@ func GenerateMassage(time time.Time) model.MessageReturned {
 	msg.StatusCode = http.StatusOK
 	return msg
 }
+
+func IsLogin(token string) bool {
+	if token == "" {
+		return false
+	}
+	return true
+}
