@@ -48,7 +48,6 @@ func FeedHandler(c *gin.Context) {
 
 	//绑定msg
 	msg.VideoList = videos
-	//将最早的视频的created_at转换为时间戳返回
 	msg.NextTime = videos[len(videos)-1].CreatedAt.Unix()
 	msg.StatusMsg = "get succeed"
 	msg.StatusCode = 0

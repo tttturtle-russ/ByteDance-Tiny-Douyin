@@ -22,6 +22,7 @@ func GenerateUniqueFileName(originalName string) string {
 	return uniqueName
 }
 
+// GetLastTime将string类型的时间转化为time.Time
 func GetLastTime(nowTime string) (latestTime time.Time, err error) {
 	if nowTime == "" {
 		latestTime = time.Unix(time.Now().Unix(), 0)

@@ -17,6 +17,7 @@ func UploadHandler(c *gin.Context) {
 			"status_code": 200,
 			"status_msg":  "please login",
 		})
+		return
 	}
 
 	//建立数据库会话
