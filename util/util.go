@@ -3,6 +3,7 @@ package util
 import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
+	"log"
 	"math/rand"
 	"strconv"
 	"time"
@@ -75,9 +76,14 @@ func GetLastTime(nowTime string) (latestTime time.Time, err error) {
 	return latestTime, nil
 }
 
-func IsLogin(token string) bool {
-	if token == "" {
-		return false
+func IsLogin(token string) (judge bool, err error) {
+	claims, err := ParseToken(token)
+	if err != nil {
+		log.Println("token解析错误")
+		return false, err
 	}
-	return true
+	if claims.Id == 0 {
+		return false, nil
+	}
+	return true, nil
 }

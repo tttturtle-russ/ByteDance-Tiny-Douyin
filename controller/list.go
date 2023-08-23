@@ -24,7 +24,14 @@ type VideosListResponse struct {
 func ShowListHandler(c *gin.Context) {
 	//判断是否登录
 	token := c.Query("token")
-	if !(util.IsLogin(token)) {
+	judge, err := util.IsLogin(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, UploadResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusMsg:  "token解析错误",
+		})
+	}
+	if !judge {
 		c.JSON(http.StatusBadRequest, VideosListResponse{
 			StatusCode: http.StatusBadRequest,
 			StatusMsg:  "please login",
@@ -38,7 +45,7 @@ func ShowListHandler(c *gin.Context) {
 
 	//绑定参数
 	var req VideosListRequest
-	err := c.ShouldBindQuery(&req)
+	err = c.ShouldBindQuery(&req)
 	if err != nil {
 		log.Printf("绑定参数失败")
 		c.JSON(http.StatusBadRequest, UploadResponse{
@@ -49,7 +56,7 @@ func ShowListHandler(c *gin.Context) {
 	}
 
 	//获取用户id并获取其发布的所有视频
-	var svc service.Service
+	svc := service.NewService(c)
 	videos, err = svc.GetVideosByID(req.UserID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, VideosListResponse{

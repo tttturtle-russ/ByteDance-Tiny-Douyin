@@ -22,7 +22,14 @@ type UploadResponse struct {
 func UploadHandler(c *gin.Context) {
 	//判断是否登录
 	token := c.PostForm("token")
-	if !(util.IsLogin(token)) {
+	judge, err := util.IsLogin(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, UploadResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusMsg:  "token解析错误",
+		})
+	}
+	if !judge {
 		c.JSON(http.StatusBadRequest, UploadResponse{
 			StatusCode: http.StatusBadRequest,
 			StatusMsg:  "please login",
@@ -32,7 +39,7 @@ func UploadHandler(c *gin.Context) {
 
 	//绑定参数
 	var req UploadRequest
-	err := c.ShouldBindQuery(&req)
+	err = c.ShouldBindQuery(&req)
 	if err != nil {
 		log.Printf("绑定参数失败")
 		c.JSON(http.StatusBadRequest, UploadResponse{
@@ -74,7 +81,7 @@ func UploadHandler(c *gin.Context) {
 		return
 	}
 	//将信息存入数据库
-	var svc service.Service
+	svc := service.NewService(c)
 	if err = svc.UploadVideo(fileName, req.Title, authorID); err != nil {
 		c.JSON(http.StatusBadRequest, UploadResponse{
 			StatusCode: http.StatusBadRequest,
