@@ -1,12 +1,17 @@
 package controller
 
 import (
-	"ByteDance-Tiny-Douyin/dao"
-	"ByteDance-Tiny-Douyin/db"
+	"ByteDance-Tiny-Douyin/service"
 	"ByteDance-Tiny-Douyin/util"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 )
+
+type UploadRequest struct {
+	Token string `form:"token" binding:"required"`
+	Title string `form:"title" binding:"required"`
+}
 
 type UploadResponse struct {
 	StatusCode int64  `json:"status_code"`
@@ -25,9 +30,31 @@ func UploadHandler(c *gin.Context) {
 		return
 	}
 
-	//建立数据库会话
-	DB := dao.NewDao(db.MySqlDB)
+	//绑定参数
+	var req UploadRequest
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		log.Printf("绑定参数失败")
+		c.JSON(http.StatusBadRequest, UploadResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
 
+	//解析token获得userID
+	claims, err := util.ParseToken(req.Token)
+	if err != nil {
+		log.Printf("获取ID失败")
+		c.JSON(http.StatusBadRequest, UploadResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+	authorID := claims.Id
+
+	//获取视频数据
 	file, err := c.FormFile("data")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, UploadResponse{
@@ -47,7 +74,8 @@ func UploadHandler(c *gin.Context) {
 		return
 	}
 	//将信息存入数据库
-	if err = dao.UploadVideo(c, fileName, DB); err != nil {
+	var svc service.Service
+	if err = svc.UploadVideo(fileName, req.Title, authorID); err != nil {
 		c.JSON(http.StatusBadRequest, UploadResponse{
 			StatusCode: http.StatusBadRequest,
 			StatusMsg:  "save data failed",
