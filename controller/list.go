@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"ByteDance-Tiny-Douyin/dao"
-	"ByteDance-Tiny-Douyin/db"
 	"ByteDance-Tiny-Douyin/model"
+	"ByteDance-Tiny-Douyin/service"
 	"ByteDance-Tiny-Douyin/util"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"strconv"
 )
 
 type VideosListRequest struct {
@@ -24,21 +25,32 @@ func ShowListHandler(c *gin.Context) {
 	//判断是否登录
 	token := c.Query("token")
 	if !(util.IsLogin(token)) {
-		c.JSON(http.StatusOK, gin.H{
-			"status_code": 200,
-			"status_msg":  "please login",
+		c.JSON(http.StatusBadRequest, VideosListResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusMsg:  "please login",
 		})
 		return
 	}
 
-	//建立数据库会话
-	DB := dao.NewDao(db.MySqlDB)
+	//初始化一个user 和video实例
 	videos := []model.Video{}
 	user := model.User{}
 
+	//绑定参数
+	var req VideosListRequest
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		log.Printf("绑定参数失败")
+		c.JSON(http.StatusBadRequest, UploadResponse{
+			StatusCode: 400,
+			StatusMsg:  err.Error(),
+		})
+		return
+	}
+
 	//获取用户id并获取其发布的所有视频
-	userID := c.Query("user_id")
-	err := dao.GetVideosByID(DB, userID, &videos)
+	var svc service.Service
+	videos, err = svc.GetVideosByID(req.UserID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, VideosListResponse{
 			StatusCode: http.StatusBadRequest,
@@ -48,12 +60,22 @@ func ShowListHandler(c *gin.Context) {
 	}
 
 	//获取该用户所有信息
-	err = dao.GetUserInfoByID(DB, userID, &user)
+	userID, err := strconv.ParseInt(req.UserID, 10, 64)
+	if err != nil {
+		log.Println("获取用户ID失败")
+		c.JSON(http.StatusBadRequest, VideosListResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusMsg:  "获取用户ID失败",
+		})
+		return
+	}
+	user, err = svc.GetInfoByUserID(userID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, VideosListResponse{
 			StatusCode: http.StatusBadRequest,
 			StatusMsg:  "get user_information failed",
 		})
+		return
 	}
 
 	//将videos.author与用户信息绑定
