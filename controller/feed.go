@@ -1,9 +1,8 @@
 package controller
 
 import (
-	"ByteDance-Tiny-Douyin/dao"
-	"ByteDance-Tiny-Douyin/db"
 	"ByteDance-Tiny-Douyin/model"
+	"ByteDance-Tiny-Douyin/service"
 	"ByteDance-Tiny-Douyin/util"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -23,13 +22,11 @@ type VideosFeedResponse struct {
 }
 
 func FeedHandler(c *gin.Context) {
-	//建立数据库会话
-	DB := dao.NewDao(db.MySqlDB)
-
 	var req VideosFeedRequest
 	msg := VideosFeedResponse{}
 	videos := []model.Video{}
 	user := model.User{}
+	svc := service.NewService(c)
 
 	//获取latest_time参数并将其转换为time.Time类型
 	err := c.ShouldBindQuery(&req)
@@ -49,19 +46,23 @@ func FeedHandler(c *gin.Context) {
 	}
 
 	//按ID降序获得最多10条数据
-	err = dao.GetVideoByTime(DB, latestTime, &videos)
+	videos, err = svc.GetVideoByTime(latestTime)
 	if err != nil {
-		msg = util.GenerateMassage(latestTime)
-		c.JSON(http.StatusOK, msg)
+		c.JSON(http.StatusBadRequest, VideosFeedResponse{
+			StatusCode: http.StatusBadRequest,
+			StatusMsg:  "get videos failed",
+		})
 		return
 	}
 
 	//遍历videos切片将author字段绑定
 	for index, video := range videos {
-		err = DB.Debug().Where("id = ?", video.AuthorID).First(&user).Error
+		user, err = svc.GetInfoByUserID(video.AuthorID)
 		if err != nil {
-			msg = util.GenerateMassage(latestTime)
-			c.JSON(http.StatusOK, msg)
+			c.JSON(http.StatusBadRequest, VideosFeedResponse{
+				StatusCode: http.StatusBadRequest,
+				StatusMsg:  "get author_info failed",
+			})
 			return
 		}
 		videos[index].Author = user

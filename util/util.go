@@ -1,11 +1,9 @@
 package util
 
 import (
-	"ByteDance-Tiny-Douyin/controller"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"math/rand"
-	"net/http"
 	"strconv"
 	"time"
 )
@@ -75,15 +73,6 @@ func GetLastTime(nowTime string) (latestTime time.Time, err error) {
 		latestTime = time.Unix(tmpTime, 0)
 	}
 	return latestTime, nil
-}
-
-func GenerateMassage(time time.Time) controller.VideosFeedResponse {
-	var msg controller.VideosFeedResponse
-	msg.StatusMsg = "get failed"
-	msg.VideoList = nil
-	msg.NextTime = time.Unix()
-	msg.StatusCode = http.StatusOK
-	return msg
 }
 
 func IsLogin(token string) bool {
