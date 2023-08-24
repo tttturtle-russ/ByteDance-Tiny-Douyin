@@ -50,7 +50,7 @@ func FavouriteList(c *gin.Context) {
 	//查找喜欢列表
 	var like []model.Video
 	svc := service.Newservice(c)
-	like, err = svc.LikeList(userid)
+	like, err = svc.FindVideosInLikeList(userid)
 	if err != nil {
 		log.Printf("查找错误，%v", err)
 		res := &ListResponse{

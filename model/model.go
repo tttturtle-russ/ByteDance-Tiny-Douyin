@@ -34,7 +34,7 @@ type LikeList struct {
 	VideoId int64 `json:"video_id"`
 }
 
-// 常用到userid和videoid的结构体
+// service
 type FavouriteInfo struct {
 	UserId  int64 `json:"user_id"`
 	VideoId int64 `json:"video_id"`

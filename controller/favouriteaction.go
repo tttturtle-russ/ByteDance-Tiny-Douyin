@@ -65,7 +65,7 @@ func FavouriteAction(c *gin.Context) {
 
 	//Like表中是否存在点赞记录
 	svc := service.Newservice(c)
-	userlike, err := svc.CheckLike(userid, videoid) //改1
+	userlike, err := svc.CheckLikeList(userid, videoid) //改1
 	if err != nil {
 		res := &ActionResponse{
 			Code: 1,
@@ -94,7 +94,7 @@ func FavouriteAction(c *gin.Context) {
 func LikeAction(userid int64, videoid int64, c *gin.Context) {
 	//LikeList加入记录
 	svc := service.Newservice(c)
-	err := svc.RecordAdd(userid, videoid)
+	err := svc.LikeListAdd(userid, videoid)
 
 	if err != nil {
 		log.Printf("添加新点赞id错误，%v", err)
@@ -108,7 +108,7 @@ func LikeAction(userid int64, videoid int64, c *gin.Context) {
 	//video获赞数增加
 	svc_1 := service.Newservice(c)
 
-	if err := svc_1.TotalAdd(videoid); err != nil {
+	if err := svc_1.VideoFavoriteCountAdd(videoid); err != nil {
 		log.Printf("增加视频点赞总数错误，%v", err)
 		res := &ActionResponse{
 			Code: 1,
@@ -119,7 +119,7 @@ func LikeAction(userid int64, videoid int64, c *gin.Context) {
 
 	//video作者获赞数增加
 	svc_2 := service.Newservice(c)
-	if err := svc_2.AuthorAdd(videoid); err != nil {
+	if err := svc_2.UserTotalFavoritedAdd(videoid); err != nil {
 		log.Printf("增加作者点赞总数错误，%v", err)
 		res := &ActionResponse{
 			Code: 1,
@@ -130,7 +130,7 @@ func LikeAction(userid int64, videoid int64, c *gin.Context) {
 
 	//user点赞数增加
 	svc_3 := service.Newservice(c)
-	if err := svc_3.UserAdd(userid); err != nil {
+	if err := svc_3.UserFavoriteCountAdd(userid); err != nil {
 		log.Printf("用户增加点赞错误， %v", err)
 		res := &ActionResponse{
 			Code: 1,
@@ -143,7 +143,7 @@ func LikeAction(userid int64, videoid int64, c *gin.Context) {
 func DislikeAction(userid int64, videoid int64, c *gin.Context) {
 	//删除点赞用户的id
 	svc := service.Newservice(c)
-	if err := svc.RecordDelete(userid, videoid); err != nil {
+	if err := svc.LikeListDelete(userid, videoid); err != nil {
 		log.Printf("删除点赞id错误，%v", err)
 		res := &ActionResponse{
 			Code: 1,
@@ -154,7 +154,7 @@ func DislikeAction(userid int64, videoid int64, c *gin.Context) {
 
 	//减少video总点赞数
 	svc_1 := service.Newservice(c)
-	if err := svc_1.TotalDown(videoid); err != nil {
+	if err := svc_1.VideoFavoriteCountDown(videoid); err != nil {
 		log.Printf("减少视频点赞总数错误，%v", err)
 		res := &ActionResponse{
 			Code: 1,
@@ -165,7 +165,7 @@ func DislikeAction(userid int64, videoid int64, c *gin.Context) {
 
 	//减少作者获赞数
 	svc_2 := service.Newservice(c)
-	if err := svc_2.AuthorDown(videoid); err != nil {
+	if err := svc_2.UserTotalFavoritedDown(videoid); err != nil {
 		log.Printf("减少作者点赞总数错误，%v", err)
 		res := &ActionResponse{
 			Code: 1,
@@ -176,7 +176,7 @@ func DislikeAction(userid int64, videoid int64, c *gin.Context) {
 
 	//减少用户点赞数
 	svc_3 := service.Newservice(c)
-	if err := svc_3.UserDown(userid); err != nil {
+	if err := svc_3.UserFavoriteCountDown(userid); err != nil {
 		log.Printf("减少用户点赞错误， %v", err)
 		res := &ActionResponse{
 			Code: 1,
