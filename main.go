@@ -7,12 +7,7 @@ import (
 )
 
 func main() {
-	err := db.InitMysql()
-	if err == nil {
-		log.Println("database connect succeed")
-	} else {
-		panic(err.Error())
-	}
+	db.InitDb()
 
 	router := routers.InitRouter()
 	log.Fatal(router.Run())
