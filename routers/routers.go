@@ -19,8 +19,8 @@ func InitRouter() *gin.Engine {
 	}
 	favorite := dy.Group("/favorite")
 	{
-		favorite.POST("/action") // 点赞和取消点赞
-		favorite.GET("/list")    // 点赞列表
+		favorite.POST("/action", controller.FavouriteAction) // 点赞和取消点赞
+		favorite.GET("/list", controller.FavouriteList)      // 点赞列表
 	}
 	publish := dy.Group("/publish")
 	{

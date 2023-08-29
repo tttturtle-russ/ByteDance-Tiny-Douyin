@@ -1,6 +1,7 @@
 package util
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"log"
@@ -87,3 +88,4 @@ func IsLogin(token string) (judge bool, err error) {
 	}
 	return true, nil
 }
+
