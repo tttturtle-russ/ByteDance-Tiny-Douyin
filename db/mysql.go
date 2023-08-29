@@ -23,4 +23,3 @@ func initMySql() {
 		panic(err)
 	}
 }
-

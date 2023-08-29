@@ -8,20 +8,31 @@ import (
 	"net/http"
 )
 
-type needResponse struct {
+type RegisterResponse struct {
 	Response
 	Id    int64  `json:"user_id"`
 	Token string `json:"token"`
 }
 
-type userRequest struct {
+type RegisterRequest struct {
 	Username string `form:"username" binding:"required"`
 	Password string `form:"password" binding:"required"`
 }
 
+type LoginRequest struct {
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	Response
+	Id    int64  `json:"user_id"`
+	Token string `json:"token"`
+}
+
 func Register(c *gin.Context) {
 	// 先进行参数校验和绑定
-	var req userRequest
+	var req RegisterRequest
 	err := c.ShouldBindQuery(&req)
 	if err != nil {
 		log.Printf("绑定参数失败")
@@ -43,7 +54,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	// 返回给前端结果
-	c.JSON(http.StatusOK, needResponse{
+	c.JSON(http.StatusOK, RegisterResponse{
 		Response: Response{
 			StatusCode:    200,
 			StatusMessage: "注册成功",
@@ -52,8 +63,9 @@ func Register(c *gin.Context) {
 		Token: "",
 	})
 }
+
 func Login(c *gin.Context) {
-	var loginRequest userRequest
+	var loginRequest LoginRequest
 	err := c.ShouldBindQuery(&loginRequest)
 	if err != nil {
 		log.Printf("绑定参数失败")
@@ -81,7 +93,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 返回给前端结果
-	c.JSON(http.StatusOK, needResponse{
+	c.JSON(http.StatusOK, LoginResponse{
 		Response: Response{
 			StatusCode:    200,
 			StatusMessage: "登陆成功",

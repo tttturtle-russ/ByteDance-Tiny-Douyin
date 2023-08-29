@@ -7,19 +7,19 @@ import (
 )
 
 type User struct {
-	gorm.Model
-	ID              int64
-	Name            string // 用户名
-	Password        string `gorm:"PASSWORD()"` // 用户密码
-	FollowCount     int64  // 关注数
-	FollowerCount   int64  // 粉丝数
-	IsFollow        bool   // 是否关注
-	Avatar          string // 头像
-	BackgroundImage string // 背景图
-	Signature       string // 个人简介
-	TotalFavorited  int64  // 总获赞数
-	WorkCount       int64  // 作品数
-	FavoriteCount   int64  // 点赞数
+	gorm.Model      `json:"-"`
+	ID              int64  `json:"id"`               // 用户ID
+	Name            string `json:"name"`             // 用户名
+	Password        string `json:"-"`                // 用户密码
+	FollowCount     int64  `json:"follow_count"`     // 关注数
+	FollowerCount   int64  `json:"follower_count"`   // 粉丝数
+	IsFollow        bool   `json:"is_follow"`        // 是否关注
+	Avatar          string `json:"avatar"`           // 头像
+	BackgroundImage string `json:"background_image"` // 背景图
+	Signature       string `json:"signature,"`       // 个人简介
+	TotalFavorited  int64  `json:"total_favorited"`  // 总获赞数
+	WorkCount       int64  `json:"work_count"`       // 作品数
+	FavoriteCount   int64  `json:"favorite_count"`   // 点赞数
 }
 
 // AfterCreate 是一个hook函数，用于创建完用户后进行的操作

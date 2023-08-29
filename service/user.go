@@ -11,6 +11,7 @@ func (svc *Service) RegisterUser(username, password string) (int64, error) {
 	}
 	return svc.d.RegisterUser(user)
 }
+
 func (svc *Service) LoginUser(username, password string) (int64, error) {
 	user := model.User{
 		Name:     username,

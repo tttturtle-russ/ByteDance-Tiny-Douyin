@@ -1,7 +1,6 @@
 package util
 
 import (
-	"github.com/dgrijalva/jwt-go"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"log"
@@ -18,9 +17,11 @@ type TokenClaims struct {
 	jwt.StandardClaims
 }
 
+// GenerateToken 生成带有id和username的token
 func GenerateToken(id int64, username string) (token string, err error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(300 * time.Second)
+
 	claims := TokenClaims{
 		Id:       id,
 		Username: username,
@@ -29,9 +30,15 @@ func GenerateToken(id int64, username string) (token string, err error) {
 			Issuer:    "ByteDance-Tiny-Douyin",
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString(jwtKey)
+	token, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(jwtKey)
+	if err != nil {
+		return "", err
+	}
+
+	return
 }
 
+// ParseToken 解析token
 func ParseToken(token string) (*TokenClaims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &TokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtKey, nil
@@ -39,7 +46,6 @@ func ParseToken(token string) (*TokenClaims, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if tokenClaims != nil {
 		if claims, ok := tokenClaims.Claims.(*TokenClaims); ok && tokenClaims.Valid {
 			return claims, nil
@@ -48,6 +54,13 @@ func ParseToken(token string) (*TokenClaims, error) {
 
 	return nil, err
 }
+
+//func SensitiveFilter(content string) bool {
+//	filter := sensitive.New()
+//	filter.LoadNetWordDict("https://raw.githubusercontent.com/importcjj/sensitive/master/dict/dict.txt")
+//	validate, _ := filter.Validate(text)
+//	return !validate
+//}
 
 // GenerateUniqueFileName生成唯一文件名
 func GenerateUniqueFileName(originalName string) string {
@@ -88,4 +101,3 @@ func IsLogin(token string) (judge bool, err error) {
 	}
 	return true, nil
 }
-

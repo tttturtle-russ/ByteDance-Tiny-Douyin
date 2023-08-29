@@ -2,7 +2,7 @@ package db
 
 import (
 	"context"
-	"github.com/go-redis/redis/v7"
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"time"
 )
@@ -25,22 +25,22 @@ func initRedis() {
 
 // Get 获取一个key
 func Get(key string) (string, error) {
-	return redisClient.Get(key).Result()
+	return redisClient.Get(ctx, key).Result()
 }
 
 // Set 设置一个key
 func Set(key string, value interface{}, timeout time.Duration) error {
-	return redisClient.Set(key, value, timeout).Err()
+	return redisClient.Set(ctx, key, value, timeout).Err()
 }
 
 // Del 删除一个key
 func Del(key string) error {
-	return redisClient.Del(key).Err()
+	return redisClient.Del(ctx, key).Err()
 }
 
 // Exists 返回一个key是否存在，存在返回true，不存在返回false
 func Exists(key string) (bool, error) {
-	n, err := redisClient.Exists(key).Result()
+	n, err := redisClient.Exists(ctx, key).Result()
 	if n == 0 {
 		return false, err
 	}

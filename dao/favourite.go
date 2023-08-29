@@ -53,7 +53,7 @@ func (d *Dao) UserTotalFavoritedAdd(VideoInfo model.VideoID) error {
 		return err
 	}
 
-	authorid := video.Author.Id
+	authorid := video.Author.ID
 	err = d.Model(&model.User{}).Where("id = ?", authorid).UpdateColumn("total_favorited", gorm.Expr("total_favorited + ?", 1)).Error
 	if err != nil {
 		return err
@@ -94,7 +94,7 @@ func (d *Dao) UserTotalFavoritedDown(VideoInfo model.VideoID) error {
 		return err
 	}
 
-	authorid := video.Author.Id
+	authorid := video.Author.ID
 	err = d.Model(&model.User{}).Where("id = ?", authorid).UpdateColumn("total_favorited", gorm.Expr("total_favorited - ?", 1)).Error
 	return err
 }
