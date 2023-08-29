@@ -11,7 +11,7 @@ import (
 
 type ChatRequest struct {
 	Token           string `json:"token" binding:"required"`
-	ToUserId        uint   `json:"to_user_id" binding:"required"`
+	ToUserId        int64  `json:"to_user_id" binding:"required"`
 	LastMessageTime int64  `json:"pre_msg_time" binding:"required"`
 }
 
@@ -23,7 +23,7 @@ type ChatResponse struct {
 
 type MessageRequest struct {
 	Token      string `json:"token" binding:"required"`
-	ToUserId   uint   `json:"to_user_id" binding:"required"`
+	ToUserId   int64  `json:"to_user_id" binding:"required"`
 	Content    string `json:"content" binding:"required"`
 	ActionType int    `json:"action_type" binding:"required"`
 }

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"ByteDance-Tiny-Douyin/service"
+	"ByteDance-Tiny-Douyin/util"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -9,13 +10,24 @@ import (
 
 type RegisterResponse struct {
 	Response
-	Id    uint   `json:"user_id"`
+	Id    int64  `json:"user_id"`
 	Token string `json:"token"`
 }
 
 type RegisterRequest struct {
 	Username string `form:"username" binding:"required"`
 	Password string `form:"password" binding:"required"`
+}
+
+type LoginRequest struct {
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
+}
+
+type LoginResponse struct {
+	Response
+	Id    int64  `json:"user_id"`
+	Token string `json:"token"`
 }
 
 func Register(c *gin.Context) {
@@ -49,5 +61,44 @@ func Register(c *gin.Context) {
 		},
 		Id:    id,
 		Token: "",
+	})
+}
+
+func Login(c *gin.Context) {
+	var loginRequest LoginRequest
+	err := c.ShouldBindQuery(&loginRequest)
+	if err != nil {
+		log.Printf("绑定参数失败")
+		c.JSON(http.StatusBadRequest, Response{
+			StatusCode:    400,
+			StatusMessage: err.Error(),
+		})
+		return
+	}
+	svc := service.NewService(c)
+	id, err := svc.LoginUser(loginRequest.Username, loginRequest.Password)
+	token, err := util.GenerateToken(id, loginRequest.Username)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, Response{
+			StatusCode:    400,
+			StatusMessage: err.Error(),
+		})
+		return
+	} else if id == 0 && token == "" {
+		c.JSON(http.StatusUnprocessableEntity, Response{
+			StatusCode:    422,
+			StatusMessage: "用户名或者密码错误，请重试！",
+		})
+		return
+	}
+	// 返回给前端结果
+	c.JSON(http.StatusOK, LoginResponse{
+		Response: Response{
+			StatusCode:    200,
+			StatusMessage: "登陆成功",
+		},
+		Id:    id,
+		Token: token,
 	})
 }

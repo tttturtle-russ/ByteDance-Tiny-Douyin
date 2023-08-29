@@ -8,7 +8,7 @@ import (
 
 type User struct {
 	gorm.Model      `json:"-"`
-	ID              uint   `json:"id"`               // 用户ID
+	ID              int64  `json:"id"`               // 用户ID
 	Name            string `json:"name"`             // 用户名
 	Password        string `json:"-"`                // 用户密码
 	FollowCount     int64  `json:"follow_count"`     // 关注数

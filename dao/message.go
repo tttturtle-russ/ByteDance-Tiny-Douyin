@@ -4,7 +4,7 @@ import (
 	"ByteDance-Tiny-Douyin/model"
 )
 
-func (d *Dao) GetMessageList(fromUserId uint, toUserId uint) ([]model.Message, error) {
+func (d *Dao) GetMessageList(fromUserId int64, toUserId int64) ([]model.Message, error) {
 	var list []model.Message
 	err := d.Model(&model.Message{}).
 		Where("from_user_id = ? AND to_user_id = ?", fromUserId, toUserId).
@@ -13,7 +13,7 @@ func (d *Dao) GetMessageList(fromUserId uint, toUserId uint) ([]model.Message, e
 	return list, err
 }
 
-func (d *Dao) SendMessage(fromUserId uint, toUserId uint, content string) error {
+func (d *Dao) SendMessage(fromUserId int64, toUserId int64, content string) error {
 	err := d.Model(&model.Message{}).
 		Create(&model.Message{
 			ToUserId:   toUserId,

@@ -5,11 +5,11 @@ import (
 	"errors"
 )
 
-func (svc *Service) GetMessageList(fromUserId uint, toUserId uint) (list []model.Message, err error) {
+func (svc *Service) GetMessageList(fromUserId int64, toUserId int64) (list []model.Message, err error) {
 	return svc.d.GetMessageList(fromUserId, toUserId)
 }
 
-func (svc *Service) SendMessage(fromUser uint, toUserId uint, content string, actionType int) error {
+func (svc *Service) SendMessage(fromUser int64, toUserId int64, content string, actionType int) error {
 	switch actionType {
 	case 1:
 		return svc.d.SendMessage(fromUser, toUserId, content)
