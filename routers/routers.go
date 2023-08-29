@@ -7,13 +7,15 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.Default()
+	router.MaxMultipartMemory = 50 << 20 //限制文件上传大小
+	router.Static("/videos", "./videos")
 	dy := router.Group("/douyin")
-	dy.GET("/feed") // 视频流接口
+	dy.GET("/feed", controller.FeedHandler) // 视频流接口
 	user := dy.Group("/user")
 	{
-		user.GET("/")          // 用户信息
-		user.POST("/register") // 注册
-		user.POST("/login")    // 登录
+		user.GET("/", controller.Userinfo)          // 用户信息
+		user.POST("/register", controller.Register) // 注册
+		user.POST("/login", controller.Login)       // 登录
 	}
 	favorite := dy.Group("/favorite")
 	{
@@ -22,13 +24,13 @@ func InitRouter() *gin.Engine {
 	}
 	publish := dy.Group("/publish")
 	{
-		publish.POST("/action") // 用户上传视频
-		publish.GET("/list")    // 视频列表
+		publish.POST("/action", controller.UploadHandler) // 用户上传视频
+		publish.GET("/list", controller.ShowListHandler)  // 视频列表
 	}
 	comment := dy.Group("/comment")
 	{
-		comment.POST("/action") // 评论和回复
-		comment.GET("/list")    // 评论列表
+		comment.POST("/action", controller.CommentAction) // 评论和回复
+		comment.GET("/list", controller.ListGet)          // 评论列表
 	}
 	relation := dy.Group("/relation")
 	{

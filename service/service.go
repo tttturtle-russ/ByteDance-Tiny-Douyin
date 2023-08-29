@@ -11,9 +11,11 @@ type Service struct {
 	c *gin.Context
 }
 
-func Newservice(c *gin.Context) *Service {
+
+// NewService 创建一个新的Service实例
+func NewService(c *gin.Context) *Service {
 	return &Service{
 		c: c,
-		d: dao.NewDao(db.DB),
-	}
+    d: dao.NewDao(db.Session()),
+  }
 }
