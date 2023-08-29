@@ -13,9 +13,9 @@ func InitRouter() *gin.Engine {
 	dy.GET("/feed", controller.FeedHandler) // 视频流接口
 	user := dy.Group("/user")
 	{
-		user.GET("/")          // 用户信息
-		user.POST("/register") // 注册
-		user.POST("/login")    // 登录
+		user.GET("/", controller.Userinfo)          // 用户信息
+		user.POST("/register", controller.Register) // 注册
+		user.POST("/login", controller.Login)       // 登录
 	}
 	favorite := dy.Group("/favorite")
 	{
@@ -29,8 +29,8 @@ func InitRouter() *gin.Engine {
 	}
 	comment := dy.Group("/comment")
 	{
-		comment.POST("/action") // 评论和回复
-		comment.GET("/list")    // 评论列表
+		comment.POST("/action", controller.CommentAction) // 评论和回复
+		comment.GET("/list", controller.ListGet)          // 评论列表
 	}
 	relation := dy.Group("/relation")
 	{

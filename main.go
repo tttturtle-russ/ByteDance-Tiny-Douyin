@@ -3,15 +3,20 @@ package main
 import (
 	"ByteDance-Tiny-Douyin/db"
 	"ByteDance-Tiny-Douyin/routers"
+	"github.com/spf13/viper"
 	"log"
 )
 
 func init() {
-	//连接数据库
-	db.InitDB()
+	viper.SetConfigFile("./config.json")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func main() {
-	router := routers.InitRouter()
-	log.Fatal(router.Run())
+	db.InitDB()
+	r := routers.InitRouter()
+	log.Fatal(r.Run())
 }
