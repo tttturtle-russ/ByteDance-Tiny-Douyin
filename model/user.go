@@ -8,6 +8,7 @@ import (
 
 type User struct {
 	gorm.Model
+	ID              int64
 	Name            string // 用户名
 	Password        string `gorm:"PASSWORD()"` // 用户密码
 	FollowCount     int64  // 关注数

@@ -10,7 +10,7 @@ import (
 
 type needResponse struct {
 	Response
-	Id    uint   `json:"user_id"`
+	Id    int64  `json:"user_id"`
 	Token string `json:"token"`
 }
 

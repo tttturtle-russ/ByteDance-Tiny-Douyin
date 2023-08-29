@@ -8,8 +8,10 @@ type Dao struct {
 	*gorm.DB
 }
 
+// NewDao 创建一个Dao实例
+
 func NewDao(db *gorm.DB) *Dao {
 	return &Dao{
 		db.Session(&gorm.Session{}),
 	}
-} // NewDao 创建一个Dao实例在数据库当中创建一个新的对象
+}
